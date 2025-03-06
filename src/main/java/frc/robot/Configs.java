@@ -1,9 +1,16 @@
 package frc.robot;
 
 import com.revrobotics.spark.config.SparkMaxConfig;
+
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.trajectory.TrajectoryConfig;
+
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
+import frc.robot.Constants.AutoConstants;
+import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.ModuleConstants;
 
 public final class Configs {
@@ -52,5 +59,19 @@ public final class Configs {
                     .positionWrappingEnabled(true)
                     .positionWrappingInputRange(0, turningFactor);
         }
+    }
+
+    public static final class TrajectoryConfigs {
+        public static TrajectoryConfig config = new TrajectoryConfig(
+                AutoConstants.kMaxSpeedMetersPerSecond,
+                AutoConstants.kMaxAccelerationMetersPerSecondSquared)
+                .setKinematics(DriveConstants.kDriveKinematics);
+
+        public static PIDController XController = new PIDController(AutoConstants.kPXController, 0, 0);
+        public static PIDController YController = new PIDController(AutoConstants.kPYController, 0, 0);
+
+        public static ProfiledPIDController thetaController = new ProfiledPIDController(
+                AutoConstants.kPThetaController, 0, 0, 
+                AutoConstants.kThetaControllerConstraints);
     }
 }

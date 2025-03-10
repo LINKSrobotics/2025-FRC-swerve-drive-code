@@ -46,7 +46,7 @@ import java.util.function.Consumer;
 public class RobotContainer {
     // The robot's subsystems
     public final static DriveSubsystem drive = new DriveSubsystem();
-    private boolean isFieldRelative = false;
+    private boolean isFieldRelative = true;
     public final static CoralSubsystem coralSubsystem = new CoralSubsystem();
     public final static CoralSubsystemL2 coralSubsystemL2 = new CoralSubsystemL2();
 
@@ -71,7 +71,7 @@ public class RobotContainer {
                     // Removed minus sign to flip robot to L1 coral = front
                     MathUtil.applyDeadband(m_driverController.getLeftY(), OIConstants.kDriveDeadband), 
                     MathUtil.applyDeadband(m_driverController.getLeftX(), OIConstants.kDriveDeadband), 
-                    MathUtil.applyDeadband(m_driverController.getRightX(), OIConstants.kDriveDeadband),
+                    MathUtil.applyDeadband(-m_driverController.getRightX(), OIConstants.kDriveDeadband),
                     isFieldRelative),
                 drive));
     }
@@ -96,7 +96,6 @@ public class RobotContainer {
         m_driverController.a().whileTrue(new CoralShootCommand(CoralShootCommand.CoralLevel.LEVEL1SLOW));
         m_driverController.leftBumper().whileTrue(new CoralShootCommand(CoralShootCommand.CoralLevel.LEVEL2F));
         m_driverController.leftTrigger().whileTrue(new CoralShootCommand(CoralShootCommand.CoralLevel.LEVEL2B));
-        //m_driverController.b().whileTrue(new CoralShootCommand(CoralShootCommand.CoralLevel.LEVEL2SLOW));
         m_driverController.x().whileTrue(new CoralShootCommand(CoralShootCommand.CoralLevel.LEVEL1FULLFIRE));
     }
 
@@ -129,7 +128,7 @@ public class RobotContainer {
         Trajectory rightL1Trajectory = TrajectoryGenerator.generateTrajectory(
             new Pose2d(0, 0, new Rotation2d(0)), // Start at the origin facing the +X direction
             List.of(new Translation2d(-0.6, 0)), //we need at least one waypoint?
-            new Pose2d(-2.22, 0, new Rotation2d(-1.047)), //this is a 60 degree left turn
+            new Pose2d(-2.22, -1.4, new Rotation2d(-1.047)), //this is a 60 degree left turn
             Configs.TrajectoryConfigs.config);
 
         Trajectory chosenTrajectory = centerL1Trajectory; //this is the default

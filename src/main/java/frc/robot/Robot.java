@@ -42,7 +42,13 @@ public class Robot extends TimedRobot {
       UsbCamera camera = CameraServer.startAutomaticCapture(0);
       camera.setVideoMode(PixelFormat.kMJPEG,160,120,30);
     } catch (Exception e) {
-      System.out.println("camera failed to initialize");
+      System.out.println("level 2 camera failed to initialize");
+    }
+    try {
+      UsbCamera camera2 = CameraServer.startAutomaticCapture(0);
+      camera2.setVideoMode(PixelFormat.kMJPEG,160,120,30);
+    } catch (Exception e) {
+      System.out.println("level 1 camera failed to initialize");
     }
 
     //m_chooser.setDefaultOption("Simple", "Simple");

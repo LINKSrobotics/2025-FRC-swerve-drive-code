@@ -48,6 +48,7 @@ public class RobotContainer {
     public final static DriveSubsystem drive = new DriveSubsystem();
     private boolean isFieldRelative = false;
     public final static CoralSubsystem coralSubsystem = new CoralSubsystem();
+    public final static CoralSubsystemL2 coralSubsystemL2 = new CoralSubsystemL2();
 
     // The driver's controller
     //XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
@@ -85,26 +86,6 @@ public class RobotContainer {
      * {@link JoystickButton}.
      */
     private void configureButtonBindings() {
-        /*
-        new JoystickButton(m_driverController, Button.kR1.value)
-            .whileTrue(new RunCommand(
-                () -> drive.setX(),
-                drive));
-
-        new JoystickButton(m_driverController, XboxController.Button.kY.value)
-            .onTrue(new InstantCommand(() -> {
-                isFieldRelative = !isFieldRelative; // Toggle the mode
-                System.out.println("Drive Mode: " + (isFieldRelative ? "Field Relative" : "Robot Relative"));
-            }));
-
-        new JoystickButton(m_driverController, XboxController.Button.kRightBumper.value)
-            .whileTrue(new RunCommand(() -> coralSubsystem.setMotorSpeed(0.5), coralSubsystem))
-            .onFalse(new RunCommand(coralSubsystem::stopMotor, coralSubsystem));
-
-        new JoystickButton(m_driverController, XboxController.Button.kLeftBumper.value)
-            .whileTrue(new RunCommand(() -> coralSubsystem.setMotorSpeed(-0.5), coralSubsystem))
-            .onFalse(new RunCommand(coralSubsystem::stopMotor, coralSubsystem));
-        */
         
         m_driverController.povUp().whileTrue(Commands.run(() -> drive.setX(), drive));
         m_driverController.y().onTrue(Commands.runOnce(() -> {
@@ -112,8 +93,11 @@ public class RobotContainer {
             System.out.println("Drive Mode: " + (isFieldRelative ? "Field Relative" : "Robot Relative"));
         }, drive));
         m_driverController.rightBumper().whileTrue(new CoralShootCommand(CoralShootCommand.CoralLevel.LEVEL1));
-        m_driverController.leftBumper().whileTrue(new CoralShootCommand(CoralShootCommand.CoralLevel.LEVEL2));
-        m_driverController.b().whileTrue(new CoralShootCommand(CoralShootCommand.CoralLevel.LEVEL2SLOW));
+        m_driverController.a().whileTrue(new CoralShootCommand(CoralShootCommand.CoralLevel.LEVEL1SLOW));
+        m_driverController.leftBumper().whileTrue(new CoralShootCommand(CoralShootCommand.CoralLevel.LEVEL2F));
+        m_driverController.leftTrigger().whileTrue(new CoralShootCommand(CoralShootCommand.CoralLevel.LEVEL2B));
+        //m_driverController.b().whileTrue(new CoralShootCommand(CoralShootCommand.CoralLevel.LEVEL2SLOW));
+        m_driverController.x().whileTrue(new CoralShootCommand(CoralShootCommand.CoralLevel.LEVEL1FULLFIRE));
     }
 
     /**
@@ -121,20 +105,41 @@ public class RobotContainer {
      *
      * @return the command to run in autonomous
      */
-    public Command getAutonomousCommand() {
+    public Command getAutonomousCommand(String choice) {
+        if (choice == "Simple")
+            return null;
+
         Configs.TrajectoryConfigs.thetaController.enableContinuousInput(-Math.PI, Math.PI);
 
-        // An example trajectory to follow. All units in meters.
-        Trajectory exampleTrajectory = TrajectoryGenerator.generateTrajectory(
-            // Start at the origin facing the +X direction
-            new Pose2d(0, 0, new Rotation2d(0)),
-            List.of(),
-            // End 3 meters straight ahead of where we started, facing forward
-            new Pose2d(-0.3048, 0, new Rotation2d(0)),
+        //Center trajectory
+        Trajectory centerL1Trajectory = TrajectoryGenerator.generateTrajectory(
+            new Pose2d(0, 0, new Rotation2d(0)), // Start at the origin facing the +X direction
+            List.of(new Translation2d(-0.6, 0)), //we need at least one waypoint?
+            new Pose2d(-1.22, 0, new Rotation2d(0)), //this get
             Configs.TrajectoryConfigs.config);
 
+        //Left trajectory (starting left of center from robot's perspective)
+        Trajectory leftL1Trajectory = TrajectoryGenerator.generateTrajectory(
+            new Pose2d(0, 0, new Rotation2d(0)), // Start at the origin facing the +X direction
+            List.of(new Translation2d(-0.6, 0)), //we need at least one waypoint?
+            new Pose2d(-2.22, 1.4, new Rotation2d(1.047)), //this is a 60 degree right turn
+            Configs.TrajectoryConfigs.config);
+
+        //Right trajectory (starting right of center from robot's perspective)
+        Trajectory rightL1Trajectory = TrajectoryGenerator.generateTrajectory(
+            new Pose2d(0, 0, new Rotation2d(0)), // Start at the origin facing the +X direction
+            List.of(new Translation2d(-0.6, 0)), //we need at least one waypoint?
+            new Pose2d(-2.22, 0, new Rotation2d(-1.047)), //this is a 60 degree left turn
+            Configs.TrajectoryConfigs.config);
+
+        Trajectory chosenTrajectory = centerL1Trajectory; //this is the default
+        if (choice == "Left")
+            chosenTrajectory = leftL1Trajectory;
+        if (choice == "Right")
+            chosenTrajectory = rightL1Trajectory;
+
         SwerveControllerCommand swerveControllerCommand = new SwerveControllerCommand(
-            exampleTrajectory,
+            chosenTrajectory,
             drive::getPose, // Functional interface to feed supplier
             DriveConstants.kDriveKinematics,
             Configs.TrajectoryConfigs.XController, 
@@ -144,18 +149,11 @@ public class RobotContainer {
             drive);
 
         // Reset odometry to the starting pose of the trajectory.
-        drive.resetOdometry(exampleTrajectory.getInitialPose());
+        drive.resetOdometry(chosenTrajectory.getInitialPose());
 
         // Run path following command, then stop at the end.
-        return swerveControllerCommand.andThen(() -> drive.drive(0, 0, 0, false));
-
-        /*
-        return new TrajectoryCommand(
-            // Start at the origin facing the +X direction
-            new Pose2d(0, 0, new Rotation2d(0)),
-            List.of(),
-            // End 3 meters straight ahead of where we started, facing forward
-            new Pose2d(-0.3048, 0, new Rotation2d(0)));
-        */
+        //return null;
+        return swerveControllerCommand.andThen(() -> drive.drive(0, 0, 0, false))
+            .andThen(new CoralShootCommand(CoralShootCommand.CoralLevel.LEVEL1));
     }
 }

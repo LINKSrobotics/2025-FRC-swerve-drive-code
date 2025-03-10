@@ -5,8 +5,14 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.commands.CoralShootCommand;
+import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.cscore.UsbCamera;
+import edu.wpi.first.util.PixelFormat;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -19,6 +25,9 @@ public class Robot extends TimedRobot {
 
   private RobotContainer m_robotContainer;
 
+  private boolean autoDone = false; //simplistic code
+  private final SendableChooser<String> m_chooser = new SendableChooser<>();
+
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -28,6 +37,22 @@ public class Robot extends TimedRobot {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
+
+    try {
+      UsbCamera camera = CameraServer.startAutomaticCapture(0);
+      camera.setVideoMode(PixelFormat.kMJPEG,160,120,30);
+    } catch (Exception e) {
+      System.out.println("camera failed to initialize");
+    }
+
+    //m_chooser.setDefaultOption("Simple", "Simple");
+    //m_chooser.setDefaultOption("Left", "Left");
+    m_chooser.setDefaultOption("Simple", "Simple");
+
+    m_chooser.addOption("Left", "Left");
+    m_chooser.addOption("Center", "Center");
+    m_chooser.addOption("Right", "Right");
+    SmartDashboard.putData("Auto Start Choices", m_chooser);
   }
 
   /**
@@ -56,16 +81,10 @@ public class Robot extends TimedRobot {
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
-    m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+    m_autonomousCommand = m_robotContainer.getAutonomousCommand(m_chooser.getSelected());
+    System.out.println("autonomus choice:" + m_chooser.getSelected());
 
-    /*
-     * String autoSelected = SmartDashboard.getString("Auto Selector",
-     * "Default"); switch(autoSelected) { case "My Auto": autonomousCommand
-     * = new MyAutoCommand(); break; case "Default Auto": default:
-     * autonomousCommand = new ExampleCommand(); break; }
-     */
-
-    // schedule the autonomous command (example)
+    // schedule the autonomous command
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
     }
@@ -73,7 +92,23 @@ public class Robot extends TimedRobot {
 
   /** This function is called periodically during autonomous. */
   @Override
-  public void autonomousPeriodic() {}
+  public void autonomousPeriodic() {
+    try {
+      if (autoDone || m_autonomousCommand != null) //if we already finished this, or we are using a selected auto command, don't run this stuff
+        return;
+
+      m_robotContainer.drive.drive(-0.3,0,0,false);
+
+      Thread.sleep(6000);
+      m_robotContainer.drive.drive(0.0,0,0,false);
+
+      CoralShootCommand csc = new CoralShootCommand(CoralShootCommand.CoralLevel.LEVEL1);
+      csc.execute();
+      Thread.sleep(200);
+      csc.end(false);
+      autoDone = true;
+    } catch (Exception e) {}
+  }
 
   @Override
   public void teleopInit() {
@@ -81,6 +116,7 @@ public class Robot extends TimedRobot {
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
     // this line or comment it out.
+    autoDone = false; //reset simple auto to run again the next match without recompile
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }

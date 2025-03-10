@@ -3,14 +3,18 @@ package frc.robot.commands;
 import java.util.function.BooleanSupplier;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
+import frc.robot.subsystems.CoralSubsystem;
 
 public class CoralShootCommand extends Command {
 
     public enum CoralLevel {
         LEVEL1 (0.5),
-        LEVEL2 (-0.5),
-        LEVEL2SLOW (-.1);
+        LEVEL1SLOW (.25),
+        LEVEL2F (1),
+        LEVEL2B (-1),
+        LEVEL1FULLFIRE (1);
 
         private double speed;
 
@@ -27,16 +31,29 @@ public class CoralShootCommand extends Command {
 
     public CoralShootCommand(CoralLevel level) {
         this.level = level;
-        this.addRequirements(RobotContainer.coralSubsystem);
+        if (level == CoralLevel.LEVEL2F || level == CoralLevel.LEVEL2B) {
+            this.addRequirements(RobotContainer.coralSubsystemL2);
+        }
+        else {
+            this.addRequirements(RobotContainer.coralSubsystem);
+        }
     }
 
     public void initialize() {}
 
     public void execute() {
-        RobotContainer.coralSubsystem.setMotorSpeed(this.level.getSpeed());
+        if (level == CoralLevel.LEVEL2F || level == CoralLevel.LEVEL2B) {
+            RobotContainer.coralSubsystemL2.setMotorSpeed(this.level.getSpeed());
+        } else {
+            RobotContainer.coralSubsystem.setMotorSpeed(this.level.getSpeed());
+        }
     }
 
     public void end(boolean interrupted) {
-        RobotContainer.coralSubsystem.stopMotor();;
+        if (level == CoralLevel.LEVEL2F || level == CoralLevel.LEVEL2B) {
+            RobotContainer.coralSubsystemL2.stopMotor();
+        } else {
+            RobotContainer.coralSubsystem.stopMotor();
+        }
     }
 }

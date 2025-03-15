@@ -46,7 +46,7 @@ import java.util.function.Consumer;
 public class RobotContainer {
     // The robot's subsystems
     public final static DriveSubsystem drive = new DriveSubsystem();
-    private boolean isFieldRelative = true;
+    private boolean isFieldRelative = false;
     public final static CoralSubsystem coralSubsystem = new CoralSubsystem();
     public final static CoralSubsystemL2 coralSubsystemL2 = new CoralSubsystemL2();
 
@@ -93,6 +93,7 @@ public class RobotContainer {
             System.out.println("Drive Mode: " + (isFieldRelative ? "Field Relative" : "Robot Relative"));
         }, drive));
         m_driverController.rightBumper().whileTrue(new CoralShootCommand(CoralShootCommand.CoralLevel.LEVEL1));
+        m_driverController.rightTrigger().whileTrue(new CoralShootCommand(CoralShootCommand.CoralLevel.LEVEL2SHOOT));
         m_driverController.a().whileTrue(new CoralShootCommand(CoralShootCommand.CoralLevel.LEVEL1SLOW));
         m_driverController.leftBumper().whileTrue(new CoralShootCommand(CoralShootCommand.CoralLevel.LEVEL2F));
         m_driverController.leftTrigger().whileTrue(new CoralShootCommand(CoralShootCommand.CoralLevel.LEVEL2B));

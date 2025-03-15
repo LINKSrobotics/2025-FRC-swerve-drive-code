@@ -14,7 +14,8 @@ public class CoralShootCommand extends Command {
         LEVEL1SLOW (.25),
         LEVEL2F (1),
         LEVEL2B (-1),
-        LEVEL1FULLFIRE (1);
+        LEVEL1FULLFIRE (1),
+        LEVEL2SHOOT (0.45);
 
         private double speed;
 
@@ -42,7 +43,11 @@ public class CoralShootCommand extends Command {
     public void initialize() {}
 
     public void execute() {
-        if (level == CoralLevel.LEVEL2F || level == CoralLevel.LEVEL2B) {
+        if (level == CoralLevel.LEVEL2SHOOT) {
+            RobotContainer.coralSubsystemL2.setMotorSpeed(this.level.getSpeed());
+            RobotContainer.coralSubsystem.setMotorSpeed(this.level.getSpeed() * -1);
+        }
+        else if (level == CoralLevel.LEVEL2F || level == CoralLevel.LEVEL2B) {
             RobotContainer.coralSubsystemL2.setMotorSpeed(this.level.getSpeed());
         } else {
             RobotContainer.coralSubsystem.setMotorSpeed(this.level.getSpeed());
@@ -50,7 +55,11 @@ public class CoralShootCommand extends Command {
     }
 
     public void end(boolean interrupted) {
-        if (level == CoralLevel.LEVEL2F || level == CoralLevel.LEVEL2B) {
+        if (level == CoralLevel.LEVEL2SHOOT) {
+            RobotContainer.coralSubsystemL2.stopMotor();
+            RobotContainer.coralSubsystem.stopMotor();
+        } 
+        else if (level == CoralLevel.LEVEL2F || level == CoralLevel.LEVEL2B) {
             RobotContainer.coralSubsystemL2.stopMotor();
         } else {
             RobotContainer.coralSubsystem.stopMotor();

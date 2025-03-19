@@ -53,13 +53,12 @@ public class Robot extends TimedRobot {
       System.out.println("level 1 camera failed to initialize");
     }
 
+    m_chooser.setDefaultOption("Left", "Left");
     //m_chooser.setDefaultOption("Simple", "Simple");
-    //m_chooser.setDefaultOption("Left", "Left");
-    m_chooser.setDefaultOption("Simple", "Simple");
     m_chooser.addOption("Simple Long", "Simple Long");
     //m_chooser.addOption("Left", "Left");
-    //m_chooser.addOption("Center", "Center");
-    //m_chooser.addOption("Right", "Right");
+    m_chooser.addOption("Center", "Center");
+    m_chooser.addOption("Right", "Right");
     SmartDashboard.putData("Auto Start Choices", m_chooser);
   }
 

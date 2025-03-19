@@ -12,8 +12,8 @@ public class CoralShootCommand extends Command {
     public enum CoralLevel {
         LEVEL1 (0.5),
         LEVEL1SLOW (.25),
-        LEVEL2F (1),
-        LEVEL2B (-1),
+        LEVEL2F (0.95),
+        LEVEL2B (-0.95),
         LEVEL1FULLFIRE (1),
         LEVEL2SHOOT (0.45);
 
@@ -44,7 +44,7 @@ public class CoralShootCommand extends Command {
 
     public void execute() {
         if (level == CoralLevel.LEVEL2SHOOT) {
-            RobotContainer.coralSubsystemL2.setMotorSpeed(this.level.getSpeed());
+            RobotContainer.coralSubsystemL2.setMotorSpeed(this.level.getSpeed() * -1);
             RobotContainer.coralSubsystem.setMotorSpeed(this.level.getSpeed() * -1);
         }
         else if (level == CoralLevel.LEVEL2F || level == CoralLevel.LEVEL2B) {

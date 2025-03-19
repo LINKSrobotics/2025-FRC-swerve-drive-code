@@ -69,8 +69,8 @@ public class RobotContainer {
             new RunCommand(
                 () -> drive.drive(
                     // Removed minus sign to flip robot to L1 coral = front. NG - switched the joystick directions to make field-oriented drive oriented
-                    MathUtil.applyDeadband(m_driverController.getLeftX(), OIConstants.kDriveDeadband), 
                     MathUtil.applyDeadband(m_driverController.getLeftY(), OIConstants.kDriveDeadband), 
+                    MathUtil.applyDeadband(m_driverController.getLeftX(), OIConstants.kDriveDeadband), 
                     MathUtil.applyDeadband(-m_driverController.getRightX(), OIConstants.kDriveDeadband),
                     isFieldRelative),
                 drive));
@@ -106,7 +106,7 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand(String choice) {
-        if (choice == "Simple")
+        if (choice.startsWith("Simple"))
             return null;
 
         Configs.TrajectoryConfigs.thetaController.enableContinuousInput(-Math.PI, Math.PI);

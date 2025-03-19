@@ -12,6 +12,8 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.commands.CoralShootCommand;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.cscore.UsbCamera;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.util.PixelFormat;
 
 /**
@@ -45,7 +47,7 @@ public class Robot extends TimedRobot {
       System.out.println("level 2 camera failed to initialize");
     }
     try {
-      UsbCamera camera2 = CameraServer.startAutomaticCapture(0);
+      UsbCamera camera2 = CameraServer.startAutomaticCapture(1);
       camera2.setVideoMode(PixelFormat.kMJPEG,160,120,30);
     } catch (Exception e) {
       System.out.println("level 1 camera failed to initialize");
@@ -54,10 +56,10 @@ public class Robot extends TimedRobot {
     //m_chooser.setDefaultOption("Simple", "Simple");
     //m_chooser.setDefaultOption("Left", "Left");
     m_chooser.setDefaultOption("Simple", "Simple");
-
-    m_chooser.addOption("Left", "Left");
-    m_chooser.addOption("Center", "Center");
-    m_chooser.addOption("Right", "Right");
+    m_chooser.addOption("Simple Long", "Simple Long");
+    //m_chooser.addOption("Left", "Left");
+    //m_chooser.addOption("Center", "Center");
+    //m_chooser.addOption("Right", "Right");
     SmartDashboard.putData("Auto Start Choices", m_chooser);
   }
 
@@ -103,14 +105,19 @@ public class Robot extends TimedRobot {
       if (autoDone || m_autonomousCommand != null) //if we already finished this, or we are using a selected auto command, don't run this stuff
         return;
 
+      Thread.sleep(1000);
       m_robotContainer.drive.drive(-0.3,0,0,false);
 
-      Thread.sleep(6000);
+      if (m_chooser.getSelected() == "Simple Long") {
+        Thread.sleep(6000);
+      } else {
+        Thread.sleep(3000);
+      }
       m_robotContainer.drive.drive(0.0,0,0,false);
 
       CoralShootCommand csc = new CoralShootCommand(CoralShootCommand.CoralLevel.LEVEL1);
       csc.execute();
-      Thread.sleep(200);
+      Thread.sleep(500);
       csc.end(false);
       autoDone = true;
     } catch (Exception e) {}
@@ -118,10 +125,11 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
+    //m_robotContainer.drive.resetOdometry(new Pose2d(0,0,new Rotation2d(Math.PI)));
     // This makes sure that the autonomous stops running when
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
-    // this line or comment it out.
+    // this line or comment it out.)
     autoDone = false; //reset simple auto to run again the next match without recompile
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();

@@ -36,6 +36,8 @@ import java.util.List;
 import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 
+import com.pathplanner.lib.commands.PathPlannerAuto;
+
 /*
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
  * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
@@ -108,52 +110,61 @@ public class RobotContainer {
     public Command getAutonomousCommand(String choice) {
         if (choice.startsWith("Simple"))
             return null;
-
-        Configs.TrajectoryConfigs.thetaController.enableContinuousInput(-Math.PI, Math.PI);
-
-        //Center trajectory
-        Trajectory centerL1Trajectory = TrajectoryGenerator.generateTrajectory(
-            new Pose2d(0, 0, new Rotation2d(0)), // Start at the origin facing the +X direction
-            List.of(new Translation2d(-0.6, 0)), //we need at least one waypoint?
-            new Pose2d(-1.22, 0, new Rotation2d(0)), //this get
-            Configs.TrajectoryConfigs.config);
-
-        //Left trajectory (starting left of center from robot's perspective)
-        Trajectory leftL1Trajectory = TrajectoryGenerator.generateTrajectory(
-            new Pose2d(0, 0, new Rotation2d(0)), // Start at the origin facing the +X direction
-            List.of(new Translation2d(-0.6, 0)), //we need at least one waypoint?
-            new Pose2d(-2.22, 1.4, new Rotation2d(1.047)), //this is a 60 degree right turn
-            Configs.TrajectoryConfigs.config);
-
-        //Right trajectory (starting right of center from robot's perspective)
-        Trajectory rightL1Trajectory = TrajectoryGenerator.generateTrajectory(
-            new Pose2d(0, 0, new Rotation2d(0)), // Start at the origin facing the +X direction
-            List.of(new Translation2d(-0.6, 0)), //we need at least one waypoint?
-            new Pose2d(-2.22, -1.4, new Rotation2d(-1.047)), //this is a 60 degree left turn
-            Configs.TrajectoryConfigs.config);
-
-        Trajectory chosenTrajectory = centerL1Trajectory; //this is the default
-        if (choice == "Left")
-            chosenTrajectory = leftL1Trajectory;
-        if (choice == "Right")
-            chosenTrajectory = rightL1Trajectory;
-
-        SwerveControllerCommand swerveControllerCommand = new SwerveControllerCommand(
-            chosenTrajectory,
-            drive::getPose, // Functional interface to feed supplier
-            DriveConstants.kDriveKinematics,
-            Configs.TrajectoryConfigs.XController, 
-            Configs.TrajectoryConfigs.YController, 
-            Configs.TrajectoryConfigs.thetaController,
-            drive::setModuleStates,
-            drive);
-
-        // Reset odometry to the starting pose of the trajectory.
-        drive.resetOdometry(chosenTrajectory.getInitialPose());
-
-        // Run path following command, then stop at the end.
-        //return null;
-        return swerveControllerCommand.andThen(() -> drive.drive(0, 0, 0, false))
-            .andThen(new CoralShootCommand(CoralShootCommand.CoralLevel.LEVEL1));
+        
+        return new PathPlannerAuto("Path Planner Center");
     }
 }
+
+
+/*Old version with trajectories
+public Command getAutonomousCommand(String choice) {
+    if (choice.startsWith("Simple"))
+        return null;
+
+    Configs.TrajectoryConfigs.thetaController.enableContinuousInput(-Math.PI, Math.PI);
+
+    //Center trajectory
+    Trajectory centerL1Trajectory = TrajectoryGenerator.generateTrajectory(
+        new Pose2d(0, 0, new Rotation2d(0)), // Start at the origin facing the +X direction
+        List.of(new Translation2d(-0.6, 0)), //we need at least one waypoint?
+        new Pose2d(-1.22, 0, new Rotation2d(0)), //this get
+        Configs.TrajectoryConfigs.config);
+
+    //Left trajectory (starting left of center from robot's perspective)
+    Trajectory leftL1Trajectory = TrajectoryGenerator.generateTrajectory(
+        new Pose2d(0, 0, new Rotation2d(0)), // Start at the origin facing the +X direction
+        List.of(new Translation2d(-0.6, 0)), //we need at least one waypoint?
+        new Pose2d(-2.22, 1.4, new Rotation2d(1.047)), //this is a 60 degree right turn
+        Configs.TrajectoryConfigs.config);
+
+    //Right trajectory (starting right of center from robot's perspective)
+    Trajectory rightL1Trajectory = TrajectoryGenerator.generateTrajectory(
+        new Pose2d(0, 0, new Rotation2d(0)), // Start at the origin facing the +X direction
+        List.of(new Translation2d(-0.6, 0)), //we need at least one waypoint?
+        new Pose2d(-2.22, -1.4, new Rotation2d(-1.047)), //this is a 60 degree left turn
+        Configs.TrajectoryConfigs.config);
+
+    Trajectory chosenTrajectory = centerL1Trajectory; //this is the default
+    if (choice == "Left")
+        chosenTrajectory = leftL1Trajectory;
+    if (choice == "Right")
+        chosenTrajectory = rightL1Trajectory;
+
+    SwerveControllerCommand swerveControllerCommand = new SwerveControllerCommand(
+        chosenTrajectory,
+        drive::getPose, // Functional interface to feed supplier
+        DriveConstants.kDriveKinematics,
+        Configs.TrajectoryConfigs.XController, 
+        Configs.TrajectoryConfigs.YController, 
+        Configs.TrajectoryConfigs.thetaController,
+        drive::setModuleStates,
+        drive);
+
+    // Reset odometry to the starting pose of the trajectory.
+    drive.resetOdometry(chosenTrajectory.getInitialPose());
+
+    // Run path following command, then stop at the end.
+    //return null;
+    return swerveControllerCommand.andThen(() -> drive.drive(0, 0, 0, false))
+        .andThen(new CoralShootCommand(CoralShootCommand.CoralLevel.LEVEL1));
+}*/

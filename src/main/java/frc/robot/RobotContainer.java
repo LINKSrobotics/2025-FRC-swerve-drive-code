@@ -39,6 +39,7 @@ import java.util.function.Consumer;
 
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.pathplanner.lib.util.PathPlannerLogging;
 
 /*
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -67,6 +68,13 @@ public class RobotContainer {
         System.out.println("Drive Mode: Robot Relative");
 
         NamedCommands.registerCommand("LEVEL1", new CoralShootCommand(CoralLevel.LEVEL1));
+        
+        // Logging callback for current robot pose
+        PathPlannerLogging.setLogCurrentPoseCallback((pose) -> {
+            // Do whatever you want with the pose here
+            //field.setRobotPose(pose);
+            //System.out.println("current x,y:" + pose.getX() + "," + pose.getY());
+        });
 
         // Configure default commands
         drive.setDefaultCommand(

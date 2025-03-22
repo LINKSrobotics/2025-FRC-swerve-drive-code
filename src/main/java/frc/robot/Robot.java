@@ -58,7 +58,7 @@ public class Robot extends TimedRobot {
 
     m_chooser.setDefaultOption("PPCenter", "PPCenter");
     //m_chooser.setDefaultOption("Simple", "Simple");
-    m_chooser.addOption("Simple Long", "Simple Long");
+    m_chooser.addOption("move forward", "move forward");
     //m_chooser.addOption("Left", "Left");
     m_chooser.addOption("Center", "Center");
     m_chooser.addOption("Right", "Right");

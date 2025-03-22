@@ -56,7 +56,7 @@ public class Robot extends TimedRobot {
       System.out.println("level 1 camera failed to initialize");
     }
 
-    m_chooser.setDefaultOption("Left", "Left");
+    m_chooser.setDefaultOption("PPCenter", "PPCenter");
     //m_chooser.setDefaultOption("Simple", "Simple");
     m_chooser.addOption("Simple Long", "Simple Long");
     //m_chooser.addOption("Left", "Left");
@@ -110,6 +110,8 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousPeriodic() {
     try {
+      //System.out.println("in autonomousperiodic line 113");
+
       if (autoDone || m_autonomousCommand != null) //if we already finished this, or we are using a selected auto command, don't run this stuff
         return;
 

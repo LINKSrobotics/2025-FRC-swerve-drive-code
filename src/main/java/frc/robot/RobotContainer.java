@@ -21,6 +21,7 @@ import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.commands.CoralShootCommand;
 import frc.robot.commands.TrajectoryCommand;
+import frc.robot.commands.CoralShootCommand.CoralLevel;
 import frc.robot.subsystems.CoralSubsystem;
 import frc.robot.subsystems.CoralSubsystemL2;
 import frc.robot.subsystems.DriveSubsystem;
@@ -36,6 +37,7 @@ import java.util.List;
 import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 
+import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 
 /*
@@ -63,6 +65,8 @@ public class RobotContainer {
         // Call the configured button bindings
         configureButtonBindings();
         System.out.println("Drive Mode: Robot Relative");
+
+        NamedCommands.registerCommand("LEVEL1", new CoralShootCommand(CoralLevel.LEVEL1));
 
         // Configure default commands
         drive.setDefaultCommand(
@@ -111,7 +115,7 @@ public class RobotContainer {
         if (choice.startsWith("Simple"))
             return null;
         
-        return new PathPlannerAuto("Path Planner Center");
+        return new PathPlannerAuto(choice);
     }
 }
 

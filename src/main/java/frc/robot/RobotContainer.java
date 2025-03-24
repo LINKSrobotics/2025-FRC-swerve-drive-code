@@ -68,6 +68,7 @@ public class RobotContainer {
         System.out.println("Drive Mode: Robot Relative");
 
         NamedCommands.registerCommand("LEVEL1", new CoralShootCommand(CoralLevel.LEVEL1));
+        NamedCommands.registerCommand("LEVEL2", new CoralShootCommand(CoralLevel.LEVEL2SHOOT));
         
         // Logging callback for current robot pose
         PathPlannerLogging.setLogCurrentPoseCallback((pose) -> {

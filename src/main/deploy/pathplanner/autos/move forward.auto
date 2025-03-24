@@ -9,6 +9,12 @@
           "data": {
             "pathName": "Copy of Copy of center to middle"
           }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "LEVEL2"
+          }
         }
       ]
     }

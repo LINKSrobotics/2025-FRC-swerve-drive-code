@@ -77,6 +77,8 @@ public class DriveSubsystem extends SubsystemBase {
       e.printStackTrace();
     }
 
+    m_gyro.setAngleAdjustment(getHeading()+180);
+
     // Configure AutoBuilder last
     AutoBuilder.configure(
             this::getPose, // Robot pose supplier

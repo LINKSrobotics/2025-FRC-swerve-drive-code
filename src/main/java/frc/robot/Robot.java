@@ -56,7 +56,7 @@ public class Robot extends TimedRobot {
       System.out.println("level 1 camera failed to initialize");
     }
 
-    m_chooser.setDefaultOption("PPCenter", "PPCenter");
+    m_chooser.setDefaultOption("center auto", "center auto");
     //m_chooser.setDefaultOption("Simple", "Simple");
     m_chooser.addOption("move forward", "move forward");
     //m_chooser.addOption("Left", "Left");

@@ -15,7 +15,8 @@ public class CoralShootCommand extends Command {
         LEVEL2F (0.95),
         LEVEL2B (-0.95),
         LEVEL1FULLFIRE (1),
-        LEVEL2SHOOT (0.45);
+        LEVEL2SHOOT (0.45),
+        LEVEL1B (-0.25);
 
         private double speed;
 

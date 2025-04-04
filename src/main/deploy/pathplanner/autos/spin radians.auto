@@ -7,13 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "short movement"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "LEVEL1"
+            "pathName": "spin radians"
           }
         }
       ]

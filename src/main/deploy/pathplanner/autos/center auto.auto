@@ -5,6 +5,12 @@
     "data": {
       "commands": [
         {
+          "type": "wait",
+          "data": {
+            "waitTime": 1.0
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "center to middle"
@@ -19,7 +25,7 @@
         {
           "type": "named",
           "data": {
-            "name": "LEVEL2"
+            "name": "LEVEL1"
           }
         },
         {
@@ -49,7 +55,7 @@
         {
           "type": "named",
           "data": {
-            "name": "LEVEL2"
+            "name": "LEVEL1"
           }
         }
       ]

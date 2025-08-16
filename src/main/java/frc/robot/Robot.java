@@ -59,9 +59,14 @@ public class Robot extends TimedRobot {
     m_chooser.setDefaultOption("center auto", "center auto");
     //m_chooser.setDefaultOption("Simple", "Simple");
     m_chooser.addOption("move forward", "move forward");
+    m_chooser.addOption("rotation test", "rotation test");
     //m_chooser.addOption("Left", "Left");
-    m_chooser.addOption("Center", "Center");
-    m_chooser.addOption("Right", "Right");
+    m_chooser.addOption("Simple", "Simple");
+    m_chooser.addOption("Simple Long", "Simple Long");
+    m_chooser.addOption("test", "test");
+    m_chooser.addOption("test copy", "test copy");
+    m_chooser.addOption("spin degrees", "spin degrees");
+    m_chooser.addOption("spin radians", "spin radians");
     SmartDashboard.putData("Auto Start Choices", m_chooser);
 
     // Build an auto chooser. This will use Commands.none() as the default option.

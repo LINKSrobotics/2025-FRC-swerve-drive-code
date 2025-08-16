@@ -107,11 +107,14 @@ public class RobotContainer {
             isFieldRelative = !isFieldRelative; // Toggle the mode
             System.out.println("Drive Mode: " + (isFieldRelative ? "Field Relative" : "Robot Relative"));
         }, drive));
-        m_driverController.rightBumper().whileTrue(new CoralShootCommand(CoralShootCommand.CoralLevel.LEVEL1));
-        m_driverController.rightTrigger().whileTrue(new CoralShootCommand(CoralShootCommand.CoralLevel.LEVEL2SHOOT));
+        //m_driverController.rightBumper().whileTrue(new CoralShootCommand(CoralShootCommand.CoralLevel.LEVEL1));
+        //m_driverController.rightTrigger().whileTrue(new CoralShootCommand(CoralShootCommand.CoralLevel.LEVEL2SHOOT));
+        m_driverController.rightBumper().whileTrue(new CoralShootCommand(CoralShootCommand.CoralLevel.LEVEL1B));
+        m_driverController.rightTrigger().whileTrue(new CoralShootCommand(CoralShootCommand.CoralLevel.LEVEL1));
         m_driverController.a().whileTrue(new CoralShootCommand(CoralShootCommand.CoralLevel.LEVEL1SLOW));
-        m_driverController.leftBumper().whileTrue(new CoralShootCommand(CoralShootCommand.CoralLevel.LEVEL2F));
-        m_driverController.leftTrigger().whileTrue(new CoralShootCommand(CoralShootCommand.CoralLevel.LEVEL2B));
+        m_driverController.b().whileTrue(new CoralShootCommand(CoralShootCommand.CoralLevel.LEVEL2SHOOT));
+        m_driverController.leftBumper().whileTrue(new CoralShootCommand(CoralShootCommand.CoralLevel.LEVEL2B));
+        m_driverController.leftTrigger().whileTrue(new CoralShootCommand(CoralShootCommand.CoralLevel.LEVEL2F));
         m_driverController.x().whileTrue(new CoralShootCommand(CoralShootCommand.CoralLevel.LEVEL1FULLFIRE));
     }
 

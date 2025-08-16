@@ -7,13 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "short movement"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "LEVEL2"
+            "pathName": "New New Path"
           }
         }
       ]
